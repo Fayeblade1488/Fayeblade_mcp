@@ -2,44 +2,47 @@
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/81bae856-9692-4b48-98a9-c8bd213935a7" />
 
 
+## What this is:
 A tiny, production-minded **browser bridge** that speaks a JSON-RPC-ish protocol over **stdin/stdout**. 
-It supports two transport framers out of the box:
+
+### It supports two transport framers out of the box:
 
 - `line` — one JSON message per line (default). Simple, friendly, great for prototyping.
 - `content-length` — HTTP-like `Content-Length: N` framed messages. Good for strict MCP hosts.
 
 It uses **Playwright** for real browser automation with a single persistent context (optional cookie/session state).
 
-This repo is hardened against the classic `asyncio.StreamWriter(sys.stdout, ...)` footgun by using a robust writer 
-implementation that **never logs to stdout**, avoids protocol mismatches, and cleanly flushes per message.
+This repo is hardened against the classic `asyncio.StreamWriter(sys.stdout, ...)` footgun by using a writer implementation that **never logs to stdout**, avoids protocol mismatches, and cleanly flushes per message.
 
 ---
 
 ## Quick Start
 
-```bash
 # 1) Create an isolated env (recommended)
+```bash
 python3 -m venv .venv && source .venv/bin/activate
-
+```
 # 2) Install deps
+```bash
 pip install -r requirements.txt
 playwright install chromium
-
+```
 # 3) Run the bridge (line framing by default)
+```bash
 make run-line
-
+```
 # In another terminal, run the example host:
+```bash
 make test-line
 ```
 
-Expect output like:
-
+### Expect output like:
 ```
 Navigate...
 {"id":"nav-1","result":{"ok":true,"final_url":"https://example.com/","title":"Example Domain"}}
 ```
 
-To exercise **Content-Length** framing:
+### _To exercise **Content-Length** framing_
 
 ```bash
 make run-cl    # terminal A
@@ -50,7 +53,7 @@ make test-cl   # terminal B
 
 ## Repo Layout
 
-```
+```plaintext
 venice-browser-mcp/
 ├─ src/
 │  ├─ venice_browser_mcp.py             # entrypoint
