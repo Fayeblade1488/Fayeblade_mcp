@@ -7,10 +7,10 @@ install:
 	$(PY) -m playwright install chromium
 
 run-line:
-	MCP_FRAMING=line HEADLESS=true $(PY) src/venice_browser_mcp.py
+	MCP_FRAMING=line HEADLESS=true PYTHONPATH=. $(PY) src/venice_browser_mcp.py
 
 run-cl:
-	MCP_FRAMING=content-length HEADLESS=true $(PY) src/venice_browser_mcp.py
+	MCP_FRAMING=content-length HEADLESS=true PYTHONPATH=. $(PY) src/venice_browser_mcp.py
 
 test-line:
 	$(PY) examples/line_host.py

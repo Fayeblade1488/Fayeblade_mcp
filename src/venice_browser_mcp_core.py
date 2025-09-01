@@ -1,7 +1,7 @@
 import os
 import sys
 import asyncio
-from venice_browser_mcp_v23_impl import run_main
+from .venice_browser_mcp_v23_impl import run_main
 
 def _bool_env(name: str, default: bool) -> bool:
     v = os.environ.get(name)

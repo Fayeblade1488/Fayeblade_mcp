@@ -1,0 +1,1 @@
+# Venice Browser MCP Package

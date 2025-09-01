@@ -3,6 +3,8 @@ import subprocess, os, json, sys, time
 
 def run_bridge(env):
     # Spawn the bridge with pipes
+    env = env.copy()  # Don't modify the passed env
+    env["PYTHONPATH"] = "."
     return subprocess.Popen(
         [sys.executable, "src/venice_browser_mcp.py"],
         stdin=subprocess.PIPE,

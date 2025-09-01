@@ -2,6 +2,8 @@
 import subprocess, os, json, sys, re, time
 
 def run_bridge(env):
+    env = env.copy()  # Don't modify the passed env
+    env["PYTHONPATH"] = "."
     return subprocess.Popen(
         [sys.executable, "src/venice_browser_mcp.py"],
         stdin=subprocess.PIPE,
