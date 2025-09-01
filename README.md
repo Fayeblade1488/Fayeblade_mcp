@@ -90,7 +90,7 @@ The bridge is configured via environment variables. Reasonable defaults chosen f
 ## RPC Methods
 
 - `browser.navigate` — `{ "url": "https://example.com" }`  
-  Opens/uses a single page, navigates, returns `{ ok, final_url, title }`.
+  Opens/uses a single page, navigates, returns `{ ok, status, final_url, title }`.
 
 - `ping` — `{ "echo": "value" }`  
   Returns `{ "echo": "value" }` for quick checks.

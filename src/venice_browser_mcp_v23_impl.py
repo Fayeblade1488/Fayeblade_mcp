@@ -217,12 +217,12 @@ async def run_main(*, framing: str, headless: bool, storage_state: str, nav_time
         params = msg.get("params") or {}
         try:
             result = await dispatcher.dispatch(method, params)
-            return {"id": mid, "result": result}
+            return {"jsonrpc": "2.0", "id": mid, "result": result}
         except _Shutdown:
-            return {"id": mid, "result": {"ok": True, "shutdown": True}}
+            return {"jsonrpc": "2.0", "id": mid, "result": {"ok": True, "shutdown": True}}
         except Exception as e:
             # return an error object; still avoid stdout noise
-            return {"id": mid, "error": {"message": str(e)}}
+            return {"jsonrpc": "2.0", "id": mid, "error": {"code": -32603, "message": str(e)}}
 
     try:
         while True:
