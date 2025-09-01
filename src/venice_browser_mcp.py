@@ -4,7 +4,11 @@
 venice_browser_mcp.py — CLI wrapper for Browser MCP Bridge (v2.4)
 Safe for stand-alone execution (python src/venice_browser_mcp.py) and package import.
 """
-import os, argparse, asyncio, sys, pathlib
+import os
+import argparse
+import asyncio
+import sys
+import pathlib
 
 # Ensure this file's directory is on sys.path so imports work in stand-alone mode
 THIS_DIR = pathlib.Path(__file__).resolve().parent
