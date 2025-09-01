@@ -1,0 +1,1 @@
+# Package marker for Venice Browser MCP Bridge

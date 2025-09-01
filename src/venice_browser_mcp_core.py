@@ -12,10 +12,10 @@ def _bool_env(name: str, default: bool) -> bool:
 
 async def main():
     framing = os.environ.get("MCP_FRAMING", "line").strip().lower()
-    headless = _bool_env("HEADLESS", True)
+    headless = _bool_env("MCP_HEADLESS", True)
     storage_state = os.environ.get("MCP_STORAGE_STATE", "state.json")
-    nav_timeout_ms = int(os.environ.get("NAV_TIMEOUT", "30000"))
-    browser_name = os.environ.get("BROWSER", "chromium").strip().lower()
+    nav_timeout_ms = int(os.environ.get("MCP_NAV_TIMEOUT_MS", "30000"))
+    browser_name = os.environ.get("MCP_BROWSER", "chromium").strip().lower()
 
     # All diagnostics go to stderr
     print(f"[bridge] starting with framing={framing}, browser={browser_name}, headless={headless}", file=sys.stderr, flush=True)
