@@ -1,4 +1,4 @@
-# Venice Browser MCP Bridge (Patched, Framing-Hardened)
+# Venice Browser MCP Bridge
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/81bae856-9692-4b48-98a9-c8bd213935a7" />
 
 
