@@ -59,7 +59,7 @@ if __name__ == "__main__":
         finally:
             # Ensure proper cleanup
             try:
-                if p.stdin and not p.stdin.closed:
+                if p.stdin is not None and not p.stdin.closed:
                     p.stdin.close()
             except Exception:
                 pass
