@@ -21,5 +21,13 @@ test-cl:
 fmt:
 	@echo "Nothing fancy; this repo is tiny."
 
+test:
+	@echo "Running test suite..."
+	$(PY) -m pytest
+
+coverage:
+	@echo "Running test suite with coverage..."
+	$(PY) -m pytest --cov=src
+
 clean:
 	rm -rf __pycache__ **/__pycache__ .pytest_cache logs *.log state.json
