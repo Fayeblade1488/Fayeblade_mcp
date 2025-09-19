@@ -12,7 +12,12 @@ import pathlib
 from venice_browser_mcp_core import main as core_main
 
 def main():
-    """Simple CLI wrapper that delegates to core_main()"""
+    """
+    Entry point for the Venice Browser MCP Bridge.
+
+    This function initializes the asyncio event loop and runs the core main
+    function, which handles the application's primary logic.
+    """
     asyncio.run(core_main())
 
 if __name__ == "__main__":

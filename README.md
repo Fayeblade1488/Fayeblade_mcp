@@ -113,7 +113,24 @@ You can add more handlers in `venice_browser_mcp_v23_impl.py` under `dispatch()`
 - `make test-line` — run example host for line mode
 - `make test-cl` — run example host for content-length mode
 - `make fmt` — basic Python formatting (via `python -m json.tool` checks and whitespace cleanup)
+- `make test` — run the automated test suite
+- `make coverage` — run tests and generate a coverage report
 - `make clean` — remove caches/artifacts
+
+---
+
+## Testing
+
+This project includes a comprehensive test suite using `pytest`.
+
+To run the tests:
+```bash
+# 1) Install development dependencies
+pip install -r requirements-dev.txt
+
+# 2) Run the test suite
+make test
+```
 
 ---
 
