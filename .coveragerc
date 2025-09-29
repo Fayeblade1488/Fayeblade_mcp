@@ -1,0 +1,22 @@
+[run]
+parallel = true
+source = venice
+omit =
+    */__main__.py
+
+[report]
+# Raise an error if coverage is below 85%
+fail_under = 85
+show_missing = true
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # Don't complain about a simple pass
+    pass
+
+    # Don't complain if non-runnable code isn't run:
+    if __name__ == .__main__.:
+
+[html]
+directory = htmlcov

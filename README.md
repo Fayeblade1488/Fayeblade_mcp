@@ -1,39 +1,42 @@
 # Venice Browser MCP Bridge
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/81bae856-9692-4b48-98a9-c8bd213935a7" />
 
-
 ## What this is:
-A tiny, production-minded **browser bridge** that speaks a JSON-RPC-ish protocol over **stdin/stdout**. 
+A tiny, production-minded **browser bridge** that speaks a JSON-RPC-ish protocol over **stdin/stdout**.
 
-### It supports two transport framers out of the box:
-
-- `line` — one JSON message per line (default). Simple, friendly, great for prototyping.
-- `content-length` — HTTP-like `Content-Length: N` framed messages. Good for strict MCP hosts.
-
-It uses **Playwright** for real browser automation with a single persistent context (optional cookie/session state).
-
-This repo is hardened against the classic `asyncio.StreamWriter(sys.stdout, ...)` footgun by using a writer implementation that **never logs to stdout**, avoids protocol mismatches, and cleanly flushes per message.
+## Features
+- **Cross-Platform**: Works on Linux, macOS, and Windows.
+- **Two Framing Modes**: Supports both `line` (default) and `content-length` framing.
+- **Persistent Sessions**: Uses Playwright for real browser automation with optional cookie/session state persistence.
+- **Safe I/O**: Hardened against common `asyncio` pitfalls to ensure clean protocol communication.
 
 ---
 
 ## Quick Start
 
-# 1) Create an isolated env (recommended)
+#### 1. Create an isolated environment (recommended)
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 ```
-# 2) Install deps
+
+#### 2. Install the package
 ```bash
-pip install -r requirements.txt
+# This will also install dependencies like Playwright
+pip install .
+
+# Install the required browser
 playwright install chromium
 ```
-# 3) Run the bridge (line framing by default)
+
+#### 3. Run the bridge
 ```bash
-make run-line
+# The 'venice' command is now available thanks to the installation
+MCP_FRAMING=line HEADLESS=true venice
 ```
-# In another terminal, run the example host:
+
+#### 4. In another terminal, run an example host
 ```bash
-make test-line
+python3 examples/line_host.py
 ```
 
 ### Expect output like:
@@ -42,31 +45,25 @@ Navigate...
 {"id":"nav-1","result":{"ok":true,"final_url":"https://example.com/","title":"Example Domain"}}
 ```
 
-### _To exercise **Content-Length** framing_
-
-```bash
-make run-cl    # terminal A
-make test-cl   # terminal B
-```
-
 ---
 
 ## Repo Layout
 
 ```plaintext
 venice-browser-mcp/
-├─ src/
-│  ├─ venice_browser_mcp.py             # entrypoint
-│  ├─ venice_browser_mcp_core.py        # env plumbing
-│  └─ venice_browser_mcp_v23_impl.py    # framing + browser logic (patched)
+├─ venice/
+│  ├─ bridge.py        # Framing, browser logic, and RPC dispatcher
+│  ├─ cli.py           # Main entry point for the command-line script
+│  └─ config.py        # Environment variable configuration
 ├─ examples/
-│  ├─ line_host.py                      # spawns bridge (line) and sends a request
-│  └─ hard_mcp_host.py                  # spawns bridge (content-length) and sends a request
+│  ├─ line_host.py
+│  └─ hard_mcp_host.py
+├─ tests/
+│  ├─ ... (test files)
 ├─ docs/
-│  ├─ ARCHITECTURE.md
-│  └─ TROUBLESHOOTING.md
+│  ├─ ... (documentation)
+├─ pyproject.toml      # Project definition and dependencies
 ├─ Makefile
-├─ requirements.txt
 ├─ .gitignore
 ├─ LICENSE
 └─ README.md
@@ -76,7 +73,7 @@ venice-browser-mcp/
 
 ## Configuration
 
-The bridge is configured via environment variables. Reasonable defaults chosen for newbies.
+The bridge is configured via environment variables.
 
 | Variable                 | Meaning                                                                              | Default            |
 |-------------------------|--------------------------------------------------------------------------------------|--------------------|
@@ -92,69 +89,52 @@ The bridge is configured via environment variables. Reasonable defaults chosen f
 
 ## RPC Methods
 
-- `browser.navigate` — `{ "url": "https://example.com" }`  
-  Opens/uses a single page, navigates, returns `{ ok, status, final_url, title }`.
+- `browser.navigate` — `{ "url": "https://example.com" }`
+- `ping` — `{ "echo": "value" }`
+- `mcp.shutdown` — No params.
 
-- `ping` — `{ "echo": "value" }`  
-  Returns `{ "echo": "value" }` for quick checks.
-
-- `mcp.shutdown` — No params.  
-  Gracefully closes browser & exits main loop.
-
-You can add more handlers in `venice_browser_mcp_v23_impl.py` under `dispatch()`.
+You can add more handlers in `venice/bridge.py` under the `dispatch()` method.
 
 ---
 
 ## Makefile Targets
 
-- `make install` — install Python deps and Playwright browser
-- `make run-line` — run bridge in line mode (foreground)
-- `make run-cl` — run bridge in content-length mode (foreground)
-- `make test-line` — run example host for line mode
-- `make test-cl` — run example host for content-length mode
-- `make fmt` — basic Python formatting (via `python -m json.tool` checks and whitespace cleanup)
-- `make clean` — remove caches/artifacts
+- `make install`: Installs project dependencies and the Playwright browser.
+- `make run-line`: Runs the bridge in line-framing mode.
+- `make run-cl`: Runs the bridge in content-length framing mode.
+- `make test-line`: Runs the example host for line mode.
+- `make test-cl`: Runs the example host for content-length mode.
+- `make test`: Runs the automated test suite with `pytest`.
+- `make coverage`: Runs tests and generates a coverage report.
+- `make clean`: Removes caches and build artifacts.
+
+---
+
+## Testing
+
+This project includes a comprehensive test suite using `pytest`.
+
+To run the tests:
+```bash
+# 1) Install development dependencies
+pip install -e ".[dev]"
+
+# 2) Run the test suite
+make test
+```
 
 ---
 
 ## “Stuck here?” Troubleshooting Lanes
 
-### 1) Crash: `AssertionError` or `'Protocol' object has no attribute '_drain_helper'`
-**Cause:** Incorrect `asyncio.StreamWriter` construction (classic pitfall).  
-**Fix:** This repo **does not** use that pattern; it uses a safe writer. Ensure you are running **these** sources and not an unpatched file. Reinstall with `git clean -xfd` or re-extract the zip.
-
-### 2) `json.decoder.JSONDecodeError: Extra data`
+### 1) `json.decoder.JSONDecodeError: Extra data`
 **Cause:** You leaked a non-JSON line to stdout (e.g., prints, warnings from other tools).  
 **Fix:** Ensure all diagnostics go to **stderr**. In Python: `print(\"dbg\", file=sys.stderr, flush=True)`.
 
-### 3) `Expecting value: line 1 column 1 (char 0)`
+### 2) `Expecting value: line 1 column 1 (char 0)`
 **Cause:** Host expected a JSON line but got empty/garbage, usually because the child process printed banners to stdout **before** the JSON.  
 **Fix:** Same as above; keep stdout pure protocol. Also verify your **framing modes match** (host vs bridge).
 
-### 4) `playwright._impl._errors.Error: BrowserType.launch: Executable doesn't exist`
+### 3) `playwright._impl._errors.Error: BrowserType.launch: Executable doesn't exist`
 **Cause:** You forgot to install browsers.  
 **Fix:** `playwright install chromium` (or `firefox` / `webkit` if you changed `BROWSER`).
-
-### 5) Headless works, but you need cookie persistence / “logged-in” state
-- Set `MCP_STORAGE_STATE=state.json` (default already).
-- Log in once with `HEADLESS=false`, then close. Subsequent sessions reuse that state.
-
-### 6) Corporate proxy, weird TTY, or PTY quirks
-If the host uses a PTY or non-pipe stdout, line-buffering can glitch. Prefer the included **example hosts** which spawn the bridge with a **pipe** and communicate cleanly.
-
----
-
-## Security Notes
-
-- This project is a **tooling bridge**. It does not bypass web/app authentication, nor does it ship exploit logic. 
-- If you extend it, keep logs on stderr, and sanitize inputs when invoking shell or navigating to user-provided URLs.
-- For red-team experiments: keep it abstracted and non-operational; do not automate harmful behaviors.
-
----
-
-## Sanity Checks
-
-- Both framers verified with the included hosts.
-- No stdout logging, atomic flush per message.
-- Single Playwright context reused across calls, optional persistence enabled.
-- Explicit timeouts on navigation.

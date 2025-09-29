@@ -1,13 +1,18 @@
+# ============================================================================
+# General
+# ============================================================================
+.DS_Store
+Thumbs.db
+
+# ============================================================================
+# Python
+# ============================================================================
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*.class
-
-# C extensions
 *.so
 
 # Distribution / packaging
-.Python
 build/
 develop-eggs/
 dist/
@@ -27,17 +32,19 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+# Virtual Environments
+.env
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
+# ============================================================================
+# Testing & Tools
+# ============================================================================
+# Test / coverage reports
 htmlcov/
 .tox/
 .nox/
@@ -49,56 +56,37 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+
+# Caches
 .ruff_cache/
 .mypy_cache/
+.pyre/
+.type/
 
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# Virtual Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyderworkspace
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static analyzer
-.type/
-
-# IDE / Editor specific
+# ============================================================================
+# IDEs & Editors
+# ============================================================================
 .vscode/
 .idea/
 *.swp
 *.swo
+.spyderproject
+.spyderworkspace
+.ropeproject
 
-# OS-specific
-.DS_Store
-Thumbs.db
-
-# Project-specific (from original file)
+# ============================================================================
+# Project Specific
+# ============================================================================
+# Playwright cache and browsers
 playwright/.local-browsers/
 playwright/.cache/
+
+# State and log files
 state.json
 cookies.json
 logs/
 *.log
+*.log*

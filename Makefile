@@ -7,10 +7,10 @@ install:
 	$(PY) -m playwright install chromium
 
 run-line:
-	MCP_FRAMING=line HEADLESS=true $(PY) src/venice_browser_mcp.py
+	MCP_FRAMING=line HEADLESS=true $(PY) -m venice.cli
 
 run-cl:
-	MCP_FRAMING=content-length HEADLESS=true $(PY) src/venice_browser_mcp.py
+	MCP_FRAMING=content-length HEADLESS=true $(PY) -m venice.cli
 
 test-line:
 	$(PY) examples/line_host.py
@@ -20,6 +20,18 @@ test-cl:
 
 fmt:
 	@echo "Nothing fancy; this repo is tiny."
+
+test:
+	@echo "Running test suite..."
+	coverage run -m pytest
+
+coverage:
+	@echo "Running test suite with coverage..."
+	coverage run -m pytest
+	@echo "Combining coverage data..."
+	coverage combine
+	@echo "Generating coverage report..."
+	coverage report -m
 
 clean:
 	rm -rf __pycache__ **/__pycache__ .pytest_cache logs *.log state.json
